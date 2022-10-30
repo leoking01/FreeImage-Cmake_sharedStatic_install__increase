@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.11)
 
 #project(FreeImage   LANGUAGES CXX C FOR   VERSION 0.1.1   )
-project(FreeImage   VERSION 0.1.1   )
+project(FreeImage   LANGUAGES CXX C VERSION 0.1.1   )
 
 option(FREEIMAGE_LIB    "Use Static Libaray" ON)
 option(SUPPORT_FMT_WEBP "use lib webp" OFF)
@@ -14,11 +14,64 @@ set(CMAKE_C_STANDARD 90)
 set(CMAKE_CXX_STANDARD 98)
 
 
+#if(MSVC)
+#    set(CMAKE_DEBUG_POSTFIX "d")
+#endif()
+
+#set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/../${PROJECT_NAME}_${CMAKE_CXX_COMPILER_VERSION}_install)
+
+
+
+
+
+
+
+
+
+
+#set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 if(MSVC)
     set(CMAKE_DEBUG_POSTFIX "d")
 endif()
+#link_directories(${CMAKE_BINARY_DIR} )
 
-set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/../${PROJECT_NAME}_${CMAKE_CXX_COMPILER_VERSION}_install)
+message( "CMAKE_C_COMPILER = ${CMAKE_C_COMPILER}"  )
+message( "CMAKE_C_COMPILER_VERSION = ${CMAKE_C_COMPILER_VERSION}"  )
+message( "CMAKE_CXX_PLATFORM_ID = ${CMAKE_CXX_PLATFORM_ID}"  )
+message( "CMAKE_CXX_COMPILER_TARGET = ${CMAKE_CXX_COMPILER_TARGET}"  )
+message( "CMAKE_CXX_COMPILER_AR = ${CMAKE_CXX_COMPILER_AR}"  )
+message( "CMAKE_C_COMPILER_ABI = ${CMAKE_C_COMPILER_ABI}"  )
+message( "CMAKE_C_COMPILER_TARGET = ${CMAKE_C_COMPILER_TARGET}"  )
+message( "CMAKE_HOST_SYSTEM = ${CMAKE_HOST_SYSTEM}"  )
+message( "CMAKE_HOST_SYSTEM_NAME = ${CMAKE_HOST_SYSTEM_NAME}"  )
+message( "CMAKE_VS_PLATFORM_NAME = ${CMAKE_VS_PLATFORM_NAME}"  )
+message( "CMAKE_VS_PLATFORM_TOOLSET = ${CMAKE_VS_PLATFORM_TOOLSET}"  )
+message( "CMAKE_CXX_COMPILER_VERSION = ${CMAKE_CXX_COMPILER_VERSION}"  )
+#message(  "CMAKE_CXX_COMPILER_TARGET= ${CMAKE_CXX_COMPILER_TARGET}"   )
+message(  "CMAKE_CXX_COMPILER_ABI= ${CMAKE_CXX_COMPILER_ABI}"   )
+message(  "CMAKE_CXX_COMPILER_EXTERNAL_TOOLCHAIN= ${CMAKE_CXX_COMPILER_EXTERNAL_TOOLCHAIN}"   )
+message(  "CMAKE_CXX_COMPILER_ID= ${CMAKE_CXX_COMPILER_ID}"   )
+message(  "CMAKE_CXX_COMPILER_ARCHITECTURE_ID= ${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}"   )
+#message(  "CMAKE_HOST_SYSTEM_NAME= ${CMAKE_HOST_SYSTEM_NAME}"   )
+message(  "CMAKE_Fortran_FORMAT= ${CMAKE_Fortran_FORMAT}"   )
+message(  "CMAKE_Fortran_COMPILER= ${CMAKE_Fortran_COMPILER}"   )
+message(  "CMAKE_Fortran_COMPILER_VERSION= ${CMAKE_Fortran_COMPILER_VERSION}"   )
+message(  "CMAKE_Fortran_COMPILER_ID= ${CMAKE_Fortran_COMPILER_ID}"   )
+
+
+
+# 改变安装路径可以使用下面的语句，Unix: "/usr/local", Windows: "c:/Program Files/${PROJECT_NAME}" 为默认值，所有的DESTINATION均以此目录为根目录
+# set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/mymath)
+#set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/../${PROJECT_NAME}_${PROJECT_VERSION}_${CMAKE_HOST_SYSTEM}_${CMAKE_CXX_COMPILER_ID}_${CMAKE_CXX_COMPILER_VERSION}_install)
+set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/../${PROJECT_NAME}_${PROJECT_VERSION}_${CMAKE_CXX_COMPILER_ID}_${CMAKE_CXX_COMPILER_VERSION}_${CMAKE_Fortran_COMPILER_ID}_${CMAKE_Fortran_COMPILER_VERSION}_install)
+
+
+
+
+
+
+
+
 
 
 add_definitions( -DFREEIMAGE_LIB )
@@ -51,7 +104,7 @@ set(SOURCE_FILES ./Source/FreeImage/BitmapAccess.cpp ./Source/FreeImage/ColorLoo
 
 #set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-add_library(${PROJECT_NAME}   ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED  ${SOURCE_FILES})
 #add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 #add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "d")
@@ -83,8 +136,8 @@ ENDIF()
 
 #、、----------------------------------------------------------
 
-install(TARGETS FreeImage DESTINATION bin)
-install(TARGETS ${PROJECT_NAME} DESTINATION lib )
+#install(TARGETS FreeImage DESTINATION bin)
+#install(TARGETS ${PROJECT_NAME} DESTINATION lib )
 #install(FILES Source/FreeImage.h DESTINATION include/FreeImage)
 #install(FILES Source/config.h DESTINATION include/FreeImage)
 #install(FILES Wrapper/FreeImagePlus/FreeImagePlus.h DESTINATION include/FreeImage)
@@ -92,21 +145,10 @@ install(TARGETS ${PROJECT_NAME} DESTINATION lib )
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 #-------------------install  destation ---------------------------
 #set( DESTINATION  "../install/")
 #set(CMAKE_INSTALL_PREFIX "../install_FreeImage_VC14/")
-set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/../${PROJECT_NAME}_${CMAKE_CXX_COMPILER_VERSION}_install)
+#set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/../${PROJECT_NAME}_${CMAKE_CXX_COMPILER_VERSION}_install)
 
 
 #          And to the end of the top-level CMakeLists.txt we add:
@@ -127,31 +169,21 @@ set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/../${PROJECT_NAME}_${CMAKE_CXX_COMP
 
     include(GNUInstallDirs)
     install(
-        TARGETS
-        ${PROJECT_NAME}
-        EXPORT
-        ${PROJECT_NAME}Targets
-        LIBRARY DESTINATION
-        ${CMAKE_INSTALL_LIBDIR}
-        RUNTIME DESTINATION
-        ${CMAKE_INSTALL_BINDIR}
-        ARCHIVE DESTINATION
-        ${CMAKE_INSTALL_LIBDIR}
-        INCLUDES DESTINATION
-        include
-        PUBLIC_HEADER DESTINATION
-        include
+        TARGETS     ${PROJECT_NAME}
+        EXPORT       ${PROJECT_NAME}Targets
+#        LIBRARY DESTINATION      ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION  ${CMAKE_INSTALL_BINDIR}
+#RUNTIME DESTINATION  ${CMAKE_INSTALL_PREFIX}/lib
+        ARCHIVE DESTINATION  ${CMAKE_INSTALL_LIBDIR}
+        INCLUDES DESTINATION         include
+        PUBLIC_HEADER DESTINATION     include
         )
 
     install(
-        EXPORT
-        ${PROJECT_NAME}Targets
-        FILE
-        ${PROJECT_NAME}Targets.cmake
-        NAMESPACE
-        ${PROJECT_NAME}::
-        DESTINATION
-        ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+        EXPORT      ${PROJECT_NAME}Targets
+        FILE      ${PROJECT_NAME}Targets.cmake
+        NAMESPACE     ${PROJECT_NAME}::
+        DESTINATION     ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
         )
 
     #
@@ -167,8 +199,7 @@ set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/../${PROJECT_NAME}_${CMAKE_CXX_COMP
     install(
         FILES
         ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME_LOWERCASE}/version.hpp
-        DESTINATION
-        include/${PROJECT_NAME_LOWERCASE}
+        DESTINATION     include/${PROJECT_NAME_LOWERCASE}
         )
 
     #
@@ -186,19 +217,8 @@ set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/../${PROJECT_NAME}_${CMAKE_CXX_COMP
 
     install(
         FILES
-        #    include/${PROJECT_NAME_LOWERCASE}
-        #  inc/SOIL/image_DXT.h
-        #  inc/SOIL/image_helper.h
-        #  inc/SOIL/SOIL.h
-        #  inc/SOIL/stb_image_aug.h
-        #  inc/SOIL/stbi_DDS_aug_c.h
-        #  inc/SOIL/stbi_DDS_aug.h
-        Source/FreeImage.h
-         Source/config.h
-        #  exportApi/${PROJECT_NAME_LOWERCASE}/api_vision.h
-        #     exportApi/${PROJECT_NAME_LOWERCASE}
-        DESTINATION
-        include/
+        Source/FreeImage.h      Source/config.h
+        DESTINATION     include/
         )
 
 
@@ -211,64 +231,33 @@ set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/../${PROJECT_NAME}_${CMAKE_CXX_COMP
     include(CMakePackageConfigHelpers)
     write_basic_package_version_file(
         ${PROJECT_NAME}ConfigVersion.cmake
-        VERSION
-        ${PROJECT_VERSION}
-        COMPATIBILITY
-        SameMajorVersion
+        VERSION      ${PROJECT_VERSION}
+        COMPATIBILITY      SameMajorVersion
         )
 
     configure_package_config_file(
         ${CMAKE_CURRENT_LIST_DIR}/cmake/${PROJECT_NAME}Config.cmake.in
         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-        INSTALL_DESTINATION
-        ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+        INSTALL_DESTINATION     ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
         )
 
     install(
         FILES
         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-        DESTINATION
-        ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+        DESTINATION    ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
         )
 
     #
     # Generate export header if specified
     #
-
     if (${PROJECT_NAME}_GENERATE_EXPORT_HEADER)
         include(GenerateExportHeader)
         generate_export_header(${PROJECT_NAME})
         install(
-            FILES
-            ${PROJECT_BINARY_DIR}/${PROJECT_NAME_LOWERCASE}_export.h
-            DESTINATION
-            include
+            FILES         ${PROJECT_BINARY_DIR}/${PROJECT_NAME_LOWERCASE}_export.h
+            DESTINATION        include
             )
         message(STATUS "Generated the export header `${PROJECT_NAME_LOWERCASE}_export.h` and installed it.")
     endif ()
-
     message(STATUS "Finished building requirements for installing the package.\n")
-
-#    #
-#    # Unit testing setup
-#    #
-#    if (0)
-#        if (${PROJECT_NAME}_ENABLE_UNIT_TESTING)
-#            enable_testing()
-#            message(STATUS "Build unit tests for the project. Tests should always be found in the test folder\n")
-#            add_subdirectory(test)
-#        endif ()
-#    endif ()
-#endif ()
-
-
-
-
-
-
-
-
-
-
-
