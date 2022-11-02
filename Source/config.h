@@ -1,5 +1,5 @@
 // use static lib
-#define FREEIMAGE_LIB
+/* #undef FREEIMAGE_LIB */
 
 /* #undef SUPPORT_FMT_WEBP */
 

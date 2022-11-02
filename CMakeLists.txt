@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.11)
 
 #project(FreeImage   LANGUAGES CXX C FOR   VERSION 0.1.1   )
-project(FreeImage   LANGUAGES CXX C VERSION 0.1.1   )
+project(FreeImage   LANGUAGES CXX C VERSION 3.18.0  )
 
-option(FREEIMAGE_LIB    "Use Static Libaray" ON)
+#   OFF  ON
+option(FREEIMAGE_LIB    "Use Static Libaray"  ON  )
 option(SUPPORT_FMT_WEBP "use lib webp" OFF)
 option(SUPPORT_FMT_JPEG "use lib jpeg" OFF)
 option(SUPPORT_FMT_OPENEXR "use lib openexr" OFF)
@@ -12,17 +13,6 @@ option(SUPPORT_FMT_JXR "use lib jxr" OFF)
 
 set(CMAKE_C_STANDARD 90)
 set(CMAKE_CXX_STANDARD 98)
-
-
-#if(MSVC)
-#    set(CMAKE_DEBUG_POSTFIX "d")
-#endif()
-
-#set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/../${PROJECT_NAME}_${CMAKE_CXX_COMPILER_VERSION}_install)
-
-
-
-
 
 
 
@@ -104,7 +94,13 @@ set(SOURCE_FILES ./Source/FreeImage/BitmapAccess.cpp ./Source/FreeImage/ColorLoo
 
 #set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-add_library(${PROJECT_NAME} SHARED  ${SOURCE_FILES})
+if (FREEIMAGE_LIB)
+    add_library(FreeImage STATIC ${SOURCE_FILES})
+else()
+    add_library(FreeImage SHARED ${SOURCE_FILES})
+endif()
+
+#add_library(${PROJECT_NAME} SHARED  ${SOURCE_FILES})
 #add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 #add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "d")
@@ -127,11 +123,7 @@ IF(MSVC)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 ENDIF()
 
-#if (${FREEIMAGE_LIB})
-#    add_library(FreeImage STATIC ${ALL_SRC})
-#else()
-#    add_library(FreeImage SHARED ${ALL_SRC})
-#endif()
+
 
 
 #、、----------------------------------------------------------
